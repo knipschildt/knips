@@ -36,7 +36,7 @@ namespace MVCShop.Areas.Admin.Controllers
                 return View(model);
             }
 
-            using(Db db = new Db())
+            using (Db db = new Db())
             {
                 string slug;
 
@@ -46,12 +46,13 @@ namespace MVCShop.Areas.Admin.Controllers
                 if (string.IsNullOrWhiteSpace(model.Slug))
                 {
                     slug = model.Title.Replace(" ", "-").ToLower();
-                } else
+                }
+                else
                 {
                     slug = model.Slug.Replace(" ", "-").ToLower();
                 }
 
-                if(db.Pages.Any(x=>x.Title == model.Title) || db.Pages.Any(x => x.Slug == model.Slug))
+                if (db.Pages.Any(x => x.Title == model.Title) || db.Pages.Any(x => x.Slug == model.Slug))
                 {
                     ModelState.AddModelError("", "That Title or Slug already exist!");
                     return View(model);
@@ -72,6 +73,7 @@ namespace MVCShop.Areas.Admin.Controllers
 
         }
 
+        [HttpGet]
         public ActionResult EditPage(int id)
         {
             PageVM model;
@@ -79,12 +81,67 @@ namespace MVCShop.Areas.Admin.Controllers
             using (Db db = new Db())
             {
                 PageDTO dto = db.Pages.Find(id);
-               
+
+                if (dto == null)
+                {
+                    return Content("Siden eksisterer ikke");
+                }
+
+                model = new PageVM(dto);
 
             }
-            return View();
+            return View(model);
         }
 
+        [HttpPost]
+        public ActionResult EditPage(PageVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
 
+            using (Db db = new Db())
+            {
+
+                int id = model.Id;
+
+                string slug = "home";
+
+                PageDTO dto = db.Pages.Find(id);
+
+                dto.Title = model.Title;
+
+                if (model.Slug != "home")
+                {
+                    if (string.IsNullOrWhiteSpace(model.Slug))
+                    {
+                        slug = model.Title.Replace(" ", "-").ToLower();
+
+                    }else
+                    {
+                        slug = model.Slug.Replace(" ","-").ToLower();
+                    }
+
+                }
+               if(db.Pages.Where(x=> x.Id != id).Any(x=> x.Title == model.Title)||
+                    db.Pages.Where(x => x.Id != id).Any(x => x.Slug == slug))
+                {
+                    ModelState.AddModelError("", "That tiitle or slug already exist");
+                    return View(model);
+                }
+
+                dto.Slug = slug;
+                dto.HasSideBar = model.HasSideBar;
+                dto.Body = model.Body;
+
+                db.SaveChanges();
+
+            }
+
+            TempData["SM"] = "You have edited the page";
+
+            return RedirectToAction("EditPage");
+        }
     }
 }
