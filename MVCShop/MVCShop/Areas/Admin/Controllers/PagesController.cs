@@ -118,14 +118,15 @@ namespace MVCShop.Areas.Admin.Controllers
                     {
                         slug = model.Title.Replace(" ", "-").ToLower();
 
-                    }else
+                    }
+                    else
                     {
-                        slug = model.Slug.Replace(" ","-").ToLower();
+                        slug = model.Slug.Replace(" ", "-").ToLower();
                     }
 
                 }
-               if(db.Pages.Where(x=> x.Id != id).Any(x=> x.Title == model.Title)||
-                    db.Pages.Where(x => x.Id != id).Any(x => x.Slug == slug))
+                if (db.Pages.Where(x => x.Id != id).Any(x => x.Title == model.Title) ||
+                     db.Pages.Where(x => x.Id != id).Any(x => x.Slug == slug))
                 {
                     ModelState.AddModelError("", "That tiitle or slug already exist");
                     return View(model);
@@ -142,6 +143,25 @@ namespace MVCShop.Areas.Admin.Controllers
             TempData["SM"] = "You have edited the page";
 
             return RedirectToAction("EditPage");
+        }
+
+        public ActionResult PageDetails(int id)
+        {
+            PageVM model;
+
+            using (Db db = new Db())
+            {
+                PageDTO dto = db.Pages.Find(id);
+
+                if (dto == null)
+                {
+                    return Content("The page does not exixt");
+                }
+
+                model = new PageVM(dto);
+
+            }
+            return View(model);
         }
     }
 }
