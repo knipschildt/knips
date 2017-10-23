@@ -10,7 +10,7 @@ namespace MVCShop.Models.ViewModels.Pages
 
         }
 
-        public PageVM(PageDTO row)
+        public PageVM(pageDTO row)
         {
             Id = row.Id;
             Title = row.Title;
