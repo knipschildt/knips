@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace MVCShop.Models.Data
 {
     [Table("tblPages")]
-    public class pageDTO
+    public class PageDTO
     {
         [Key]
         public int Id { get; set; }

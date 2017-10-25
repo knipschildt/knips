@@ -40,7 +40,7 @@ namespace MVCShop.Areas.Admin.Controllers
             {
                 string slug;
 
-                pageDTO dto = new pageDTO();
+                PageDTO dto = new PageDTO();
 
                 dto.Title = model.Title;
                 if (string.IsNullOrWhiteSpace(model.Slug))
@@ -80,7 +80,7 @@ namespace MVCShop.Areas.Admin.Controllers
 
             using (Db db = new Db())
             {
-                pageDTO dto = db.Pages.Find(id);
+                PageDTO dto = db.Pages.Find(id);
 
                 if (dto == null)
                 {
@@ -108,7 +108,7 @@ namespace MVCShop.Areas.Admin.Controllers
 
                 string slug = "home";
 
-                pageDTO dto = db.Pages.Find(id);
+                PageDTO dto = db.Pages.Find(id);
 
                 dto.Title = model.Title;
 
@@ -151,7 +151,7 @@ namespace MVCShop.Areas.Admin.Controllers
 
             using (Db db = new Db())
             {
-                pageDTO dto = db.Pages.Find(id);
+                PageDTO dto = db.Pages.Find(id);
 
                 if (dto == null)
                 {
@@ -168,7 +168,7 @@ namespace MVCShop.Areas.Admin.Controllers
         {
             using (Db db = new Db())
             {
-                pageDTO dto = db.Pages.Find(id);
+                PageDTO dto = db.Pages.Find(id);
 
                 db.Pages.Remove(dto);
 
@@ -184,7 +184,7 @@ namespace MVCShop.Areas.Admin.Controllers
             {
                 int count = 1;
 
-                pageDTO dto;
+                PageDTO dto;
 
                 foreach (var pageId in id)
                 {
