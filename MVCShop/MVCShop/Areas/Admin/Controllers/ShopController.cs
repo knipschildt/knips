@@ -7,6 +7,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
+using PagedList;
 
 namespace MVCShop.Areas.Admin.Controllers
 {
@@ -138,8 +139,16 @@ namespace MVCShop.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                using (Db db = new Db())
+                {
+
+                    model.Categories = new SelectList(db.Categories.ToList(), "Id", "Name");
+                    return View(model);
+
+                }
+
             }
+
 
             using (Db db = new Db())
             {
@@ -159,10 +168,10 @@ namespace MVCShop.Areas.Admin.Controllers
                 product.Slug = model.Name.Replace(" ", "-").ToLower();
                 product.Description = model.Description;
                 product.Price = model.Price;
-                product.CategoryId = model.Id;
+                product.CategoryId = model.CategoryId;
 
                 CategoryDTO catDTO = db.Categories.FirstOrDefault(x => x.Id == model.CategoryId);
-                model.CategoryName = catDTO.Name;
+                product.CategoryName = catDTO.Name;
 
                 db.Products.Add(product);
                 db.SaveChanges();
@@ -217,7 +226,7 @@ namespace MVCShop.Areas.Admin.Controllers
                 using (Db db = new Db())
                 {
                     ProductDTO dto = db.Products.Find(id);
-                    dto.Name = imageName;
+                    dto.ImageName = imageName;
 
                     db.SaveChanges();
                 }
@@ -234,6 +243,30 @@ namespace MVCShop.Areas.Admin.Controllers
             #endregion
 
             return RedirectToAction("AddProduct");
+        }
+
+        public ActionResult Products(int? page, int? catId)
+        {
+            List<ProductVM> ListOfProductVM;
+
+            var pageNumber = page ?? 1;
+
+            
+
+            using (Db db = new Db())
+            {
+                ListOfProductVM = db.Products.ToArray().Where(x => catId == null || catId == 0 || x.CategoryId == catId).Select(x => new ProductVM(x)).ToList();
+
+                ViewBag.categories = new SelectList(db.Categories.ToList(), "Id", "Name");
+
+                ViewBag.selectedCat = catId.ToString();
+
+            }
+
+            var onePageOfProducts = ListOfProductVM.ToPagedList(pageNumber, 3);
+            ViewBag.OnePageOfProducts = onePageOfProducts;
+
+            return View(ListOfProductVM);
         }
     }
 }
