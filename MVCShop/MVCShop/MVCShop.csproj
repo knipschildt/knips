@@ -229,6 +229,7 @@
     <Content Include="Areas\Admin\Views\Shop\Categories.cshtml" />
     <Content Include="Areas\Admin\Views\Shop\AddProduct.cshtml" />
     <Content Include="Areas\Admin\Views\Shop\Products.cshtml" />
+    <Content Include="Areas\Admin\Views\Shop\EditProduct.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-3.2.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.2.1.js" />

@@ -1,13 +1,13 @@
 ﻿using MVCShop.Models.Data;
 using MVCShop.Models.ViewModels;
 using MVCShop.Models.ViewModels.Shop;
+using PagedList;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
-using PagedList;
 
 namespace MVCShop.Areas.Admin.Controllers
 {
@@ -251,7 +251,7 @@ namespace MVCShop.Areas.Admin.Controllers
 
             var pageNumber = page ?? 1;
 
-            
+
 
             using (Db db = new Db())
             {
@@ -267,6 +267,49 @@ namespace MVCShop.Areas.Admin.Controllers
             ViewBag.OnePageOfProducts = onePageOfProducts;
 
             return View(ListOfProductVM);
+        }
+
+        public ActionResult EditProduct(int id)
+        {
+            ProductVM model;
+
+            using (Db db = new Db())
+            {
+                ProductDTO dto = db.Products.Find(id);
+
+                if (dto == null)
+                {
+                    return Content("That product does not exist");
+                }
+
+                model = new ProductVM(dto);
+
+                model.Categories = new SelectList(db.Categories.ToList(), "Id", "Name");
+                model.GalleryImages = Directory.EnumerateFiles(Server.MapPath("~/Images/Uploads/Products/" + id + "/Thumbs")).Select(fn => Path.GetFileName(fn));
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult EditProduct(ProductVM model, HttpPostedFileBase file)
+        {
+            int id = model.Id;
+
+            using (Db db = new Db())
+            {
+                model.Categories = new SelectList(db.Categories.ToList(), "Id", "Name");
+
+            }
+
+            model.GalleryImages = Directory.EnumerateFiles(Server.MapPath("~/Images/Uploads/Products/" + id + "/Thumbs")).Select(fn => Path.GetFileName(fn));
+
+            if (!ModelState.IsValid)
+            {          
+                   return View(model);
+            }
+
+            return View();
         }
     }
 }
