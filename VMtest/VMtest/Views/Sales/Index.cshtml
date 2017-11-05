@@ -1,0 +1,39 @@
+﻿@model IEnumerable<VMtest.Models.SalesDTO>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.product.productName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SaleDate)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.product.productName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SaleDate)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.saleId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.saleId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.saleId })
+        </td>
+    </tr>
+}
+
+</table>
